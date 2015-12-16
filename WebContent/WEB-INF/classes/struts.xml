@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+	<constant name="struts.objectFactory" value="spring" />
+	<!-- 设置此项后修改此文件后不用重启服务 -->
+	<constant name="struts.configuration.xml.reload" value="true"></constant>
+	<package name="default" namespace="/" extends="struts-default">
+	
+		<global-results>
+			<result name="ok">/global/ok.jsp</result>
+			<result name="error">/global/error.jsp</result>
+		
+		</global-results>
+		
+		<!-- 账单类别管理 -->
+		<action name="costtype_*" class="costTypeAction" method="{1}">
+			<result name="list">/pages/costtype/list.jsp</result>
+			<result name="add">/pages/costtype/add.jsp</result>
+			<result name="update">/pages/costtype/update.jsp</result>
+		</action>
+		
+		<!-- 用户管理 -->
+		<action name="spender_*" class="spenderAction" method="{1}">
+			<result name="list">/pages/spender/list.jsp</result>
+			<result name="add">/pages/spender/add.jsp</result>
+			<result name="update">/pages/spender/update.jsp</result>
+		</action>
+		
+		<!-- 账单管理 -->
+		<action name="costinfo_*" class="costInfoAction" method="{1}">
+			<result name="list">/pages/costinfo/list.jsp</result>
+			<result name="add">/pages/costinfo/add.jsp</result>
+			<result name="update">/pages/costinfo/update.jsp</result>
+		</action>		
+		
+		<!-- 表格测试 -->
+		<action name="charts_*" class="chartsAction" method="{1}">
+			<result name="test">/WEB-INF/chart/chart01.jsp</result>
+			<result name="test01">/WEB-INF/chart/chart02.jsp</result>
+		</action>
+		
+		<!-- 用户登录 -->
+		<action name="login_*" class="loginAction" method="{1}">
+			<result name="loginok">index.jsp</result>
+			<result name="loginerror">/pages/login/login.jsp</result>
+		</action>
+		<!--功能列表-->
+		<action name="funlist_*" class ="funListAction" method="{1}">
+			<result name="list">/pages/funlist/list.jsp</result>
+			<result name="add">/pages/funlist/add.jsp</result>
+			<result name="update">/pages/funlist/update.jsp</result>
+		</action>
+	</package>
+
+</struts>	
