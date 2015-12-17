@@ -1,2 +1,3 @@
 *.class
 *.bak
+WebContent/WEB-INF/classes/*
