@@ -5,27 +5,58 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" language="javascript" src="${pageContext.request.contextPath}/pages/js/jquery-1.11.3.js"></script>
+<style type="text/css">
+div{
+	position: relative;
+	top: 20px;
+	left: 30px;
+}
+</style>
 <script type="text/javascript">
 $(function(){
 	var t=true;
 	var s = $("ul li:hidden");
-	 $("a").click(function(){
+	 $("#more").click(function(){
 		 if(t){
 			 s.show();
-			 $("a").html("简化");
+			 $("#more").html("简化");
 			 t=false;
 		 }else{
 			 t=true;
 			 s.hide();
-			 $("a").html("更多");
+			 $("#more").html("更多");
 	 	}
 	 });
+});
+$(function(){
+		$("#submit").bind("click", function(){
+			var a = $("#a").val();
+			var b =$("#b").val();
+			$.ajax({
+				url:"charts_tt.action?a="+a+"&b="+b,
+				dataType:"text",
+				success:function(data){
+					alert(data);
+				}
+			});
+		});
+});
+$(function(){
+	$("#post").bind("click",function(){
+		$.post("charts_pp.action" , {
+			a:$("#a").val(),
+			b:$("#b").val()
+		}, function(data){
+			alert(data);
+		});
+	});
 });
 </script>
 <title>showHidden</title>
 </head>
 <body>
-<a>更多</a>
+<a id="more">更多</a><br><br><br>
+<a onclick="window.history.back()">返回</a>
 <ul>
 	<li>111</li>
 	<li>222</li>
@@ -37,5 +68,11 @@ $(function(){
 	<li  style="display: none">888</li>
 	<li>999</li>
 </ul>
+<div id="test" >
+	<input type="text" name="a" id="a" /><br>
+	<input type="text" name="b" id="b"/><br>
+	<input type="button" id="submit" value="提交"><br>
+	<input type="button" id="post" value="post">
+</div>
 </body>
 </html>

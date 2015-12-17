@@ -1,7 +1,10 @@
 package com.djl.charts;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
@@ -15,6 +18,34 @@ import ChartDirector.XYChart;
 
 @Controller @Scope("prototype")
 public class ChartsAction {
+	
+	public String tt(){
+		try {
+		String a = ServletActionContext.getRequest().getParameter("a");
+		String b = ServletActionContext.getRequest().getParameter("b");
+		System.out.println("a="+a+"  b="+b );
+		HttpServletResponse response =ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write("后台成功获取数据");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String pp(){
+		try {
+		String a = ServletActionContext.getRequest().getParameter("a");
+		String b = (String) ServletActionContext.getRequest().getParameter("b");
+		System.out.println("a="+a+"  b="+b );
+		HttpServletResponse response =ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write("后台成功获取数据"+"a="+a+"  b="+b );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public String test(){
 		// The data for the bar chart
