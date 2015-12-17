@@ -40,6 +40,7 @@
 		<action name="charts_*" class="chartsAction" method="{1}">
 			<result name="test">/WEB-INF/chart/chart01.jsp</result>
 			<result name="test01">/WEB-INF/chart/chart02.jsp</result>
+			<result name="tt">/pages/jQuery/shhi.jsp</result>
 		</action>
 		
 		<!-- 用户登录 -->
@@ -52,6 +53,12 @@
 			<result name="list">/pages/funlist/list.jsp</result>
 			<result name="add">/pages/funlist/add.jsp</result>
 			<result name="update">/pages/funlist/update.jsp</result>
+		</action>
+		
+		
+		<!-- 做超链接使用，其余action必须在此action	前面 -->
+		<action name="*">
+			<result>/pages/jQuery/{1}.jsp</result>		
 		</action>
 	</package>
 
