@@ -14,9 +14,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.djl.basic.BasicDomain;
+
 @Entity
 @Table(name="spender")
-public class Spender extends BaseObject {
+public class Spender extends BasicDomain {
 
 	private static final long serialVersionUID = 8616691615946641575L;
 	@Id

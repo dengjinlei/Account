@@ -14,9 +14,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.djl.basic.BasicDomain;
+
 @Entity
 @Table(name="costtype")
-public class CostType extends BaseObject{
+public class CostType extends BasicDomain{
 	private static final long serialVersionUID = -3706472168793141911L;
 	//标示为主键、 主键生成策略
 	@Id

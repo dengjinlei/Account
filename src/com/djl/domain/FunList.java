@@ -8,6 +8,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.djl.basic.BasicDomain;
+
 /**
  * 功能列表bean
  * @author djl
@@ -15,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name="funlist")
-public class FunList extends BaseObject{
+public class FunList extends BasicDomain{
 	 
 	private static final long serialVersionUID = 4912450522801180077L;
 	@Id
