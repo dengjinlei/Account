@@ -1,3 +1,4 @@
+<%@page import="com.djl.domain.Page"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags"%>
@@ -5,9 +6,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script language= "javascript" type="text/javascript" src="<%=request.getContextPath() %>/pages/js/WdatePicker.js"></script>
 <script language="javascript" src="${pageContext.request.contextPath }/pages/js/jquery-1.11.3.js"></script>
 <script language="javascript" src="${pageContext.request.contextPath }/pages/js/jquery.form.js"></script>
-<script language= "javascript" type="text/javascript" src="<%=request.getContextPath() %>/pages/js/WdatePicker.js"></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/pages/css/table.css">
 <script type="text/javascript">
 /* function clear(){
@@ -15,19 +16,27 @@
 	document.getElementById("sptime").value='';
 	var x=document.getElementsByName("costInfo.amtflag");  //获取所有name=costInfo.amtflag的元素  
 	    for(var i=0;i<x.length;i++){ //对所有结果进行遍历，如果状态是被选中的，则将其选择取消  
-	        if (x[i].checked==true)  
+	        if (x[i].checked)  
 	         {  
 	           x[i].checked=false;  
 	      	 }  
 	    } 
 
 	}  */
+	function turnPage(i){
+		var currentPage = $("#currentPage").val();
+		if(i=='-1')
+			$("#currentPage").val(currentPage-1);
+		else
+			$("#currentPage").val(currentPage+i);
+		$("#myform").submit();
+	}
 	//使用jQuery进行form清除工作
 $(function (){
 	$("table.datalist tr:nth-child(odd)").addClass("altrow");
-	$("#sptime").focus();
+	/* $("#sptime").focus(); */
 	$("input[type=button]:eq(0)").click(function(){
-		$("#myform").clearForm();
+		$("input").clearFields() ;
 	});
 });
 </script>
@@ -42,17 +51,14 @@ $(function (){
 	----<a href="costinfo_exportXml.action">导出xml格式账单</a>
 	----<a href="costinfo_readXml.action">读取xml格式账单</a>
 	<br />	<br />
-	<table  style="border-collapse: collapse;width: 60%" align="center" border="0">
-	<s:form name="costInfo" id="myform" action="costinfo_list.action" theme="simple" >
+	<table  style="border-collapse: collapse;width: 70%" align="center" border="0">
+	<s:form name="costInfo" id="myform" method="post" action="costinfo_list.action" theme="simple" >
+		<input type="hidden" id="currentPage" name="currentPage" value="${page.currentPage }"/>
 		<tr>
 			<td align="left" style="padding-left: 7px;padding-bottom: 10px">账单日期:</td>
-			<td style="padding-left: 5px;padding-bottom: 10px"><s:textfield name="costInfo.spendTime" id="sptime" class="Wdate" value="%{sptime}" style="width:195px" label="账单日期" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
-			<%-- <td align="left" style="padding-left: 7px;padding-bottom: 10px">账单类型:</td>
 			<td style="padding-left: 5px;padding-bottom: 10px">
-			<s:select list="#costtypes" label="花费种类"  name="costInfo.ctid" listKey="id"  listValue="name" headerKey="" headerValue="" style="width:200px" />
+				<input name="costInfo.spendTime" id="sptime" class="Wdate" value="${sptime}" style="width:195px"   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
 			</td> 
-		</tr>
-		<tr>--%>
 				<td align="left" style="padding-left: 7px;padding-bottom: 10px">账目方向:</td>
 				<td style="padding-left: 5px;padding-bottom: 10px">
 					<s:radio list="#{'-1':'支出','1':'收入'}" label="账目方向"  name="costInfo.amtflag" id="amtflag"  value="%{costInfo.amtflag}" style="width:50px" />
@@ -70,31 +76,30 @@ $(function (){
 	<br />	<br />
 	<!-- <table class="datalist" style ="border-collapse:collapse;width:80%" align="center"  border="1"> -->
 	<table class="datalist" align="center" >
-		<tr>
-			<td align="center"  colspan="2">操作</td>
+		<tr align="center"  >
+			<td colspan="2">操作</td>
 			<!-- <td align="center">删除</td> -->
-			<td align="center">序号</td>
-			<td align="center">账单日期</td>
-			<td align="center">账单人</td>
-			<td align="center">账单类型</td>
-			<td align="center">账单方向</td>
-			<td align="center">账单金额</td>
-			<td align="center">记账人</td>
-			<td align="center">备注</td>
+			<td >序号</td>
+			<td >账单日期</td>
+			<td >账单人</td>
+			<td >账单类型</td>
+			<td >账单方向</td>
+			<td >账单金额</td>
+			<td >记账人</td>
+			<td >备注</td>
 		</tr>
 		<s:iterator value="#costinfos" status="ct">
-		<tr>
-				<td align="center"><a href="costinfo_updatePage.action?id=${id }">修改</a></td>
-				 <td align="center"><a href="costinfo_delete.action?id=${id }" onclick="return confirm('确认删除？')">删除</a></td> 
-				<%-- <td align="center"><a href="costinfo_delete.action?id=${id }"+  onclick="javascript:window.confirm('确认删除？');">删除</a></td> --%>
-				<td align="center"><s:property value="#ct.index+1" /></td>
-				<td align="center"><s:date name="spendTime" format="yyyy-MM-dd"/></td>
-				<td align="center"><s:property value="spname"/></td>
-				<td align="center"><s:property value="ctname"/></td>
-				<td align="center"><s:if test="amtflag==1">收入</s:if><s:elseif test="amtflag==-1">支出</s:elseif></td>
-				<td align="center"><s:property value="amt"/></td>
-				<td align="center"><s:property value="acname"/></td>
-				<td align="center" width="250px"><s:property value="comment"/></td>
+		<tr align="center">
+				<td ><a href="costinfo_updatePage.action?id=${id }">修改</a></td>
+				 <td ><a href="costinfo_delete.action?id=${id }" onclick="return confirm('确认删除？')">删除</a></td> 
+				<td ><s:property value="#ct.index+1" /></td>
+				<td ><s:date name="spendTime" format="yyyy-MM-dd"/></td>
+				<td ><s:property value="spname"/></td>
+				<td ><s:property value="ctname"/></td>
+				<td ><s:if test="amtflag==1">收入</s:if><s:elseif test="amtflag==-1">支出</s:elseif></td>
+				<td ><s:property value="amt"/></td>
+				<td ><s:property value="acname"/></td>
+				<td align="left" width="250px"><s:property value="comment"/></td>
 			</tr>
 		</s:iterator>
 		<tr >
@@ -103,7 +108,7 @@ $(function (){
 			<a  >上一页</a>
 		</s:if>
 		<s:else>
-			<a href="costinfo_list.action?currentPage=${page.currentPage -1} ">上一页</a>
+			<input type="button" value="上一页" onclick="turnPage(-1)"/>
 		</s:else>
 		
 		<a >第<s:property value="#page.currentPage+1"/>页</a>
@@ -111,7 +116,7 @@ $(function (){
 			<a  >下一页</a>
 		</s:if>
 		<s:else>
-			<a href="costinfo_list.action?currentPage=${page.currentPage+1 }">下一页</a>
+			<input type="button" value="下一页" onclick="turnPage(1)"/>
 		</s:else>
 		
 		<a  >共<s:property value="#page.totalPage"/>页</a>

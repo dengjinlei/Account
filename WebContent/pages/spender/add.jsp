@@ -11,43 +11,41 @@
 <title>Account</title>
 </head>
 <script type="text/javascript">
-
-<%-- function saveResult(){
-	var result = 
-	<%
-	 request.getParameter("error").toString();
-	%>
-	if(result!=null&&result!="")
-		alert(result);
-}  --%>
-
-function check(spender){
-	var spname = document.getElementById("spname").value;
-	var level = document.getElementById("level").value;
-	if(spname==""){
-		alert("用户名不能为空！");
-		return false;
-	}
-	if(level==""){
-		alert("级别不能为空！");
-		return false;
-	}
-	return true;
-}
-//通过AJAX验证用户名是否重复
+//通过jQuery的ajax验证用户名是否重复
 function uniqueCheck(){
 	var spname = document.getElementById("spname").value;
 	var xhr = new XMLHttpRequest();
 	if(spname!=""){
 		//ajax的缓存机制导致添加一个用户后，再添加此用户时验重方法取得是缓存的结果，所以在请求结尾添加随机数
 		//让ajax每次都发出查询请求  或者+timestamp= new Date().getTime()
-		xhr.open("GET", "spender_checkUnique.action?spname="+spname+"&t="+Math.random());
-		 xhr.setRequestHeader("Context-Type", "Charset=UTF-8");  
+		$.get("spender_checkUnique.action" , {spname:spname , t:Math.random()} , 
+			function(data){
+				$("#spnameresult").html(data.msg);
+		},"json"
+		);
+	}
+}
+function save(){
+	var spname = $("#spname").val();
+	if(spname!=""){
+		 $.post("spender_add.action", $("form[name='spender']").serializeArray(),
+				 function(data){
+			 			if(data.code==0){
+			 				alert(data.msg);
+			 				location.href="spender_list.action";
+			 			}else
+			 				alert(data.msg);
+		 },"json");
+	}else
+		alert("用户名不能为空！");
+}
+/* 	xhr.open("GET", "spender_checkUnique.action?spname="+spname+"&t="+Math.random());
+		xhr.setRequestHeader("Context-Type", "Charset=UTF-8");  
 		xhr.send();
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState==4){
 				if(xhr.status==200){
-					/* document.getElementById("spnameresult").innerHTML=xhr.responseText; */
+					 //document.getElementById("spnameresult").innerHTML=xhr.responseText; 
 					$("#spnameresult").html(xhr.responseText);
 					return true;
 				}else {
@@ -55,26 +53,14 @@ function uniqueCheck(){
 					return false;
 				}
 			}
-		}
-	}
-}
-
+		} */
 </script>
-<body onload="saveResult()">
+<!-- <body onload="saveResult()"> -->
+<body>
 <br/><br/><br/><br/><br/><br/>
 <h2 align="center">用户管理--添加用户</h2>
-<%-- <s:debug/> --%>
-<%-- <center>
-<s:form action="spender_add.action" method="post" name="spender" > 
-	<s:hidden name="sender.id"/>
-	<s:textfield label="用户名"  name="spender.name" value="" size="40"/>
-	<s:password label="密码" name="spender.password" value="" size="40" />
-	<s:submit value="保存" />
-</s:form>
-</center> --%>
-
 <table border="0" align="center">
-<s:form action="spender_add.action" method="post" name="spender"  theme="simple" onsubmit=" return check(this);" > 
+<s:form action="spender_add.action" method="post" name="spender"  theme="simple"   > 
  <s:hidden name="sender.id"/>
 	<tr>
 		<td align="left" style="padding-left: 7px;padding-bottom: 10px">用户名:</td>
@@ -99,7 +85,7 @@ function uniqueCheck(){
 			 </td>
 				<tr>				
 			<td style="padding-left: 50px;padding-bottom: 10px">
-			<s:submit value="保存"  /></td>
+			<input type="button" value="保存" onclick="save();"></td>
 			<td align="right" style="padding-right: 15px;padding-bottom: 10px">
 				<input type="button" value="返回" onclick="window.history.back()"></td>		
 	</tr>

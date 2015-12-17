@@ -4,16 +4,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<script type="text/javascript" language="javascript" src="${pageContext.request.contextPath }/pages/js/jquery-1.11.3.js" ></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Account</title>
+<script type="text/javascript">
+/* $(function(){
+	alert("jquery test");
+}); */
+
+ function update(){
+	$.post("spender_update.action",$("form[name='spender']").serializeArray(),
+		function(data){
+			alert(data.msg);
+			if(data.code==0)
+				location.href="spender_list.action";
+	},"json"
+	);
+}
+ </script>
 </head>
 <body>
-	<br />
-	<br />
-	<br />
-	<br />
-	<br />
-	<br />
+	<br /> <br /> <br /> <br /> <br /> <br />
 	<h2 align="center">用户管理--修改密码</h2>
 	<%-- <s:debug/> --%>
 	<table border="0" align="center">
@@ -39,8 +50,8 @@
 						id="level" /> <!-- <a style="color: red">*</a> --></td>
 			<tr>
 			<tr>
-				<td style="padding-left: 50px; padding-bottom: 10px"><s:submit
-						value="更新" />
+				<td style="padding-left: 50px; padding-bottom: 10px">
+						<input type="button" id="upbtn" value="更新"  onclick="update()" >
 				</td>
 				<td align="right" style="padding-right: 15px; padding-bottom: 10px">
 					<input type="button" value="返回" onclick="window.history.back()">

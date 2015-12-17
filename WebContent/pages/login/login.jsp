@@ -56,7 +56,6 @@ $(function(){
 		<td> <s:submit value="登录"> </s:submit></td>
 	</tr>
 	
-	
 	</s:form>
 </table>
 </body>

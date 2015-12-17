@@ -4,6 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<script type="text/javascript" language="javascript" src="${pageContext.request.contextPath }/pages/js/jquery-1.11.3.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style type="text/css">
 table{
@@ -21,15 +22,14 @@ tr{
 table.leftlab{
 	text-align:right;
 }
-
-
 </style>
+
 <title>Account</title>
 </head>
 <body>
 
 <table align="center">
-<s:form name="funList"  action="funlist_update.action" method="post" theme="simple">
+<s:form name="funList"  action="funlist_update.action" method="post" theme="simple" >
 	<input type="hidden" name="funList.id" value="${funList.id }"/>
 	<tr>
 		<td class="leftlab">名称:</td>
@@ -63,7 +63,7 @@ table.leftlab{
 		</td>
 	</tr>
 	<tr>
-		<td><input type="submit" value="更新"/>
+		<td><input type="submit" value="更新"  id="upbtn" />
 		</td>
 		<td align="right"><input type="button" value="返回" onclick="window.history.back()"/>
 		</td>

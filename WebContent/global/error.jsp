@@ -5,6 +5,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Account</title>
+<script type="text/javascript" language="javascript" src="<%=request.getContextPath() %>/pages/js/jquery-1.11.3.js"></script>
+<%-- <script type="text/javascript">
+$(function(){
+	 alert("操作失败！"+${ });
+	 window.location = "<%=request.getAttribute("bean")+"_list.action"%>";
+}); --%>
+</script>
 </head>
 <body>
 <h3>操作失败</h3>
