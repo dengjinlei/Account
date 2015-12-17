@@ -6,7 +6,7 @@ import com.djl.basic.BasicServiceInt;
 import com.djl.domain.Spender;
 
 public interface SpenderServiceInt extends BasicServiceInt {
-		public List<Spender> list(Object []parms) ;
+		public List<Spender> list(int level) ;
 //	public Spender find(String id );
 	public String checkUnique(String name);
 }
