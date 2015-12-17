@@ -1,1 +1,4 @@
 *.class
+WebContent/WEB-INF/classes/*
+WebContent/WEB-INF/classes/applicationContext.xml
+WebContent/WEB-INF/classes/struts.xml
