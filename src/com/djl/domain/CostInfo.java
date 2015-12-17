@@ -13,9 +13,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.djl.basic.BasicDomain;
+
 @Entity
 @Table(name="costInfo")
-public class CostInfo extends BaseObject {
+public class CostInfo extends BasicDomain {
 
 	private static final long serialVersionUID = 6148582256560704419L;
 	//花费信息id
@@ -27,7 +29,7 @@ public class CostInfo extends BaseObject {
 	//花费人spid
 	@Transient	   //表示非数据库字段
 	private String spid;
-	@ManyToOne
+	@ManyToOne(targetEntity=Spender.class)
 	//name:本表字段名称，referencedColumnName：对应外键表字段名称
 	@JoinColumn(name="spid" , referencedColumnName="id")
 	private Spender spender;
@@ -38,14 +40,14 @@ public class CostInfo extends BaseObject {
 	//花费种类ctid
 	@Transient	   //表示非数据库字段
 	private int ctid;
-	@ManyToOne
+	@ManyToOne(targetEntity=CostType.class)
 	@JoinColumn(name="ctid" ,   referencedColumnName="id" )
 	private  CostType costType;
 	
 	//记账人acid
 	@Transient	   //表示非数据库字段
 	private String acid;
-	@ManyToOne
+	@ManyToOne(targetEntity=Spender.class)
 	@JoinColumn(name="acid" ,  referencedColumnName="id" )
 	private Spender accounter;
 	
@@ -168,6 +170,18 @@ public class CostInfo extends BaseObject {
 		this.accounter = accounter;
 		this.comment = comment;
 		this.amt = amt;
+	}
+	//对返回list进行封装使用
+	public CostInfo(String id, Date spendTime, String spname ,  String ctname , String acname, String comment, double amt,
+			 int amtflag) {
+		this.id = id;
+		this.spendTime = spendTime;
+		this.spname = spname;
+		this.ctname = ctname;
+		this.acname = acname;
+		this.comment = comment;
+		this.amt = amt;
+		this.amtflag = amtflag;
 	}
 
 	
