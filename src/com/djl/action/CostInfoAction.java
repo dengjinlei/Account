@@ -7,9 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +24,7 @@ import org.dom4j.io.SAXReader;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.djl.basic.BasicAction;
 import com.djl.domain.CostInfo;
 import com.djl.domain.CostType;
 import com.djl.domain.Page;
@@ -34,10 +33,16 @@ import com.djl.service.CostInfoService;
 import com.djl.service.CostTypeService;
 import com.djl.service.SpenderService;
 import com.opensymphony.xwork2.ActionContext;
-
-@Controller @Scope("prototype")
-public class CostInfoAction{
+/**
+ * 未使用ajax发送接收数据
+ * @author  dengjinlei
+ *
+ */
+@Controller 
+@Scope("prototype")
+public class CostInfoAction extends BasicAction{
 	
+	private static final long serialVersionUID = -4691387579451002049L;
 	private CostInfo costInfo;
 	@Resource CostInfoService costInfoService;
 	@Resource CostTypeService costTypeService;
@@ -51,41 +56,31 @@ public class CostInfoAction{
 	}
 	
 	public String list() throws Exception{
-//		int pageNo= 0 , count =5 ;
 		Page page = new Page();
-//		int firstRow=0;
 		String pageNo ="";
 		//定义map存放查询参数
 		Map<String , Object> map = new HashMap<String, Object>();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		if(costInfo!=null ){
-			System.out.println("costtime:"+costInfo.getSpendTime()+"-----------------costtype:"+costInfo.getAmtflag()) ;
 			if(costInfo.getSpendTime()!=null)
 				map.put("spendTime", costInfo.getSpendTime());
 			if(costInfo.getAmtflag()!=0)
 				map.put("amtFlag", costInfo.getAmtflag());
 		}
-		
+		//获取显示页码数
 		if(ServletActionContext.getRequest().getParameter("currentPage")!=null)
 			pageNo = ServletActionContext.getRequest().getParameter("currentPage").toString();
-		 
+		 //放入显示页码数
 		if(pageNo!=null&&pageNo.length()!=0){
 			page.setCurrentPage(Integer.valueOf( pageNo));
-//			firstRow = page.getCurrentPage()*page.getCount();
 		}
-//		page.setFirstRow(firstRow);
+		//获取数据list及分页信息
 		page = costInfoService.list(page,map);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = (List<Object[]>) page.getList();
-		List<CostInfo> costinfos = this.getCostInfosList(list);
-//		List<CostInfo> costinfos =  (List<CostInfo>) page.getList();
-		//改为数据库分页，此处恢复原来封装
-//		List<CostInfo> costinfos = getCostInfosList(firstRow, page.getCount(), listtmps);
-//		List<CostInfo> costinfos = getCostInfosList( listtmps);
-		//得到list条数
-		int totalcount =page.getTotalCount();
-		System.out.println("列表总条数是"+totalcount) ;
-		
+//		List<Object[]> list = (List<Object[]>) page.getList();
+		//改为在sql中实例化costinfo对象进行封装
+		List<CostInfo> costinfos = page.getList();
+//		List<CostInfo> costinfos = this.getCostInfosList(list);
 		ActionContext.getContext().put("costinfos", costinfos);
 		ActionContext.getContext().put("page", page);
 	if(costInfo!=null){
@@ -96,7 +91,8 @@ public class CostInfoAction{
 		return "list";
 	}
 	
- public List<CostInfo> getCostInfosList(List<Object[]> listtmps)
+	//封装返回结果
+/*	public List<CostInfo> getCostInfosList(List<Object[]> listtmps)
 			throws ParseException {
 		// 把返回结果封装到List<CostInfo> 中，便于前台显示--改为导出xml使用
 		List<CostInfo> costinfos = new ArrayList<CostInfo>();
@@ -118,42 +114,8 @@ public class CostInfoAction{
 			}
 		}
 		return costinfos;
-	} 
+	} */
 	
-	/**
-	 * 
-	 * @param firstRow 起始行位置
-	 * @param pageCount 每页显示条数
-	 * @param listtmps list结果
-	 * @return
-	 * @throws ParseException
-	 */
-/*	public List<CostInfo> getCostInfosList(int  firstRow, int pageCount, List<Object[]> listtmps)
-			throws ParseException {
-		//把返回结果封装到List<CostInfo> 中，便于前台显示
-		List <CostInfo> costinfos = new ArrayList<CostInfo>();
-		CostInfo ci = null;
-		DateFormat df = DateFormat.getDateInstance();
-//		for(Object[] obj : listtmps){
-		if(listtmps.size()<firstRow+pageCount)
-			pageCount=listtmps.size();
-		for(int i = firstRow ; i< pageCount ; i++){
-			if(listtmps.get(i)[0]!=null){
-				ci = new CostInfo();
-				ci.setId(listtmps.get(i)[0].toString());
-				if(listtmps.get(i)[1]!=null)
-					ci.setSpendTime(df.parse(listtmps.get(i)[1].toString()));
-				ci.setSpname(listtmps.get(i)[2].toString());
-				ci.setCtname(listtmps.get(i)[3].toString());
-				ci.setAcname(listtmps.get(i)[4].toString());
-				ci.setComment(listtmps.get(i)[5].toString());
-				ci.setAmt(Double.valueOf(listtmps.get(i)[6].toString()));
-				ci.setAmtflag(Integer.valueOf(listtmps.get(i)[7].toString()));
-				costinfos.add(ci);
-			}
-		}
-		return costinfos;
-	}*/
 	
 	//显示新增costInfo页面
 	public String addPage(){
@@ -161,7 +123,8 @@ public class CostInfoAction{
 		//注入两个额外的Service 来获得其查询列表
 		List<CostType> costtypes = costTypeService.list();
 		ActionContext.getContext().put("costtypes", costtypes);
-		List<Spender> spenders = spenderService.list(null);
+		//暂定为除系统管理员均可选----
+		List<Spender> spenders = spenderService.list(2);
 		ActionContext.getContext().put("spenders", spenders);
 		return "add";
 	}
@@ -211,7 +174,8 @@ public class CostInfoAction{
 		//注入两个额外的Service 来获得其查询列表
 		List<CostType> costtypes = costTypeService.list();
 		ActionContext.getContext().put("costtypes", costtypes);
-		List<Spender> spenders = spenderService.list(null);
+		//暂定为除系统管理员均可选----
+		List<Spender> spenders = spenderService.list(2);
 		ActionContext.getContext().put("spenders", spenders);
 		return "update";
 	}
@@ -231,9 +195,9 @@ public class CostInfoAction{
 	public String exportXml(){
 		String fileName =  "D:/xml/costinfolist.xml";
 		
-		List<Object[]> listtmps = costInfoService.list();
+		List<CostInfo> costinfos = costInfoService.list();
 		try {
-			List<CostInfo> costinfos = getCostInfosList(listtmps);
+//			List<CostInfo> costinfos = getCostInfosList(listtmps);
 			Document document = setCostInfosElement(costinfos);
 			document.setXMLEncoding("UTF8");
 			
@@ -251,8 +215,6 @@ public class CostInfoAction{
 			writer.close();
 			
 			System.out.println("生成xml文档成功");
-		} catch (ParseException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
