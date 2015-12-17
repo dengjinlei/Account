@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.djl.basic.BasicService;
+import com.djl.domain.CostInfo;
 import com.djl.domain.Page;
 
 @Service @Transactional(rollbackFor=RuntimeException.class)
@@ -71,14 +72,14 @@ public class CostInfoService extends BasicService{
 		Object []parms= new Object[2];
 		StringBuffer hql = new StringBuffer();
 		StringBuffer hqlCount = new StringBuffer();
-		hql.append("select id , spendTime , spender.name , costType.name , accounter.name , comment , amt , costType.amtflag  from CostInfo  ");
+		hql.append("select new CostInfo( id , spendTime , spender.name  as spname , costType.name as ctname , accounter.name as acname , comment , amt , costType.amtflag as amtflag ) from CostInfo  ");
 		hqlCount.append("select count(id) from CostInfo  ");
 		if(map!=null&&map.size()!=0){
 			hql.append(" where 1= 1 ");
 			hqlCount.append(" where 1= 1 ");
 			if(map.get("spendTime")!=null){
-				hql.append(" and spendTime = ? ");
-				hqlCount.append(" and spendTime = ? ");
+				hql.append(" and spendTime >= ? ");
+				hqlCount.append(" and spendTime >= ? ");
 				parms[i]=map.get("spendTime");
 				i++;
 			}
@@ -96,17 +97,18 @@ public class CostInfoService extends BasicService{
 		//获得总页数
 		 int totalPage = (totalCount %page.getSize()==0) ?  totalCount /page.getSize():( totalCount /page.getSize()+1);
 		page.setTotalPage(totalPage);
-		List list = this.queryListOfPage(hql.toString(), parms, page.getCurrentPage(), page.getSize());
+		@SuppressWarnings("unchecked")
+		List<CostInfo> list = this.queryListOfPage(hql.toString(), parms, page.getCurrentPage(), page.getSize());
 		page.setList(list);
 		return page;
 	}
 	
 	@Transactional (propagation=Propagation.NOT_SUPPORTED)
-	public List<Object[]> list(){
+	public List<CostInfo> list(){
 		
-		String hql = "select id , spendTime , spender.name , costType.name , accounter.name , comment , amt , costType.amtflag  from CostInfo order by spendTime desc";
+		String hql = "select new CostInfo( id , spendTime , spender.name  as spname , costType.name as ctname , accounter.name as acname , comment , amt , costType.amtflag as amtflag )  from CostInfo order by spendTime desc";
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = this.queryList(hql, null);
+		List<CostInfo> list = this.queryList(hql, null);
 		return list;
 	}
 	
