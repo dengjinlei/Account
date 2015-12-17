@@ -9,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.djl.basic.BasicAction;
 import com.djl.domain.FunList;
 import com.djl.domain.Page;
 import com.djl.service.FunListService;
@@ -17,7 +18,9 @@ import com.opensymphony.xwork2.ActionContext;
 
 @Controller
 @Scope("prototype")
-public class FunListAction {
+public class FunListAction extends BasicAction{
+
+	private static final long serialVersionUID = 3071064639750731755L;
 
 	private static final Logger log = Logger.getLogger(FunListAction.class);
 	
