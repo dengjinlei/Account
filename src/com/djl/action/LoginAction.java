@@ -35,50 +35,58 @@ public class LoginAction {
 	
 	public String userLogin(){
 		try {
-			Spender user = (Spender) ServletActionContext.getRequest().getSession().getAttribute("userContext");
-			//此时用户已经登录且未在重新登录
-			if(user!=null&&userContext==null){
-				userContext=user;
+			// 从session中获取登录信息
+			Spender user = (Spender) ServletActionContext.getRequest()
+					.getSession().getAttribute("userContext");
+			List<FunList> funlists = null;
+			if (user != null) {
+				//显示用户功能列表
+				funlists = loginService.showList(user.getLevel());
 			}
-			//登录认证
-			if(userContext!=null){
-				//获取用户信息
-				Spender testUser = loginService.getUser(userContext);
-				if(testUser!=null){
-					if(userContext.getPassword() .equals(testUser.getPassword())){
-						//获取该用户功能列表
-						List<FunList> funlists = loginService.showList(testUser.getLevel());
-						ActionContext.getContext().put("funlist", funlists);
-						//把用户信息放入session
-						ServletActionContext.getRequest().getSession().setAttribute("userContext", userContext);
-						return "loginok";
-					}else
-					{	
-						throw new LoginException("密码错误");
+			else {
+				// 登录认证
+				if (userContext != null) {
+					// 根据用户名获取用户信息
+					Spender testUser = loginService.getUser(userContext
+							.getName());
+					if (testUser != null) {
+						// 密码正确
+						if (userContext.getPassword().equals(
+								testUser.getPassword())) {
+							// 获取该用户功能列表
+							funlists = loginService.showList(testUser
+									.getLevel());
+							// 把用户信息放入session
+							ServletActionContext.getRequest().getSession()
+									.setAttribute("userContext", testUser);
+							log.warn("用户登录，用户名：" + userContext.getName());
+						} else {
+							throw new LoginException("密码错误！");
+						}
+					} else {
+						throw new LoginException("用户名不存在！");
 					}
+				}else {
+					throw new LoginException("用户登录超时或已退出，请重新登录！");
 				}
-				else{
-					throw new LoginException("用户名不存在");
-				}
-			}else
-			{
-				throw new LoginException("获取登陆信息失败");
 			}
+			ActionContext.getContext().put("funlist", funlists);
+			return "loginok";
 		} catch (LoginException e) {
 			log.warn("登录错误:"+e.getMessage());
 			ServletActionContext.getRequest().setAttribute("errinfo", e.getMessage());
 			return "loginerror";
 		}catch(Exception e){
 			log.error("登录错误"+e.getMessage(),e);
-			ServletActionContext.getRequest().setAttribute("errinfo", e.getMessage());
+			ServletActionContext.getRequest().setAttribute("errinfo", "未知错误，请联系系统管理员");
 			return "loginerror";
 		}
 
 	}
 	
 	public String logout(){
-		System.out.println("用户退出登录");
-		ServletActionContext.getRequest().getSession().setAttribute("userContext", null);
+		log.warn("用户退出登录");
+		ServletActionContext.getRequest().getSession().removeAttribute("userContext");
 		return "loginerror";
 	}
 	
